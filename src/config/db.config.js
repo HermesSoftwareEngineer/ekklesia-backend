@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize");
 
 require('dotenv').config();
 
-sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
     logging: false,
 });
 
@@ -14,3 +14,5 @@ sequelize = new Sequelize(process.env.DATABASE_URL, {
         console.error('Unable to connect to the database:', error);
     }
 })();
+
+module.exports = sequelize;

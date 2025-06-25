@@ -1,7 +1,8 @@
 const express = require('express');
 const port = 3000
 const sequelize = require('./config/db.config')
-app = express()
+const app = express()
+const userModel = require('./models/users.models')
 
 app.get("/helloworld", (req, res) => {
     res.send("Olá, mundo!")
@@ -20,4 +21,3 @@ app.use("/users/", usersRoutes)
 app.listen(port, () => {
     console.log(`Servidor rodando em: http://localhost:${port}/`)
 })
-
