@@ -41,7 +41,7 @@ const User = sequelize.define(
         },
     },
     {
-        //Other options for model here
+        //Other options for model here1
     },
 );
 
