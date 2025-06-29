@@ -1,7 +1,8 @@
 const express = require('express');
-const port = 3000
-const sequelize = require('./config/db.config')
-const app = express()
+const port = 3000;
+const sequelize = require('./config/db.config');
+const Participante = require("./models/participante.models");
+const app = express();
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
