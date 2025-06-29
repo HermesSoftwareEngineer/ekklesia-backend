@@ -5,4 +5,8 @@ const router = express.Router()
 const authRoutes = require('./auth.routes')
 router.use("/auth/", authRoutes)
 
+// Rotas para participante
+const participanteRoutes = require('./participante.routes');
+router.use("/participante/", participanteRoutes);
+
 module.exports = router;

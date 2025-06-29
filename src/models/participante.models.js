@@ -21,7 +21,6 @@ const Participante = sequelize.define(
         },
         email: {
             type: DataTypes.STRING(100),
-            allowNull: false,
         },
         telefone: {
             type: DataTypes.STRING(20),
