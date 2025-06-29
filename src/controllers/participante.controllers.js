@@ -12,15 +12,45 @@ const buscarParticipante = async (req, res) => {
         }
         const resposta = {
             aviso: "Participante encontrado!",
-            idEnviado: id,
             participante: participante
         };
 
         res.status(200).json(resposta);
-    }catch(error){
-        res.status(500).json({erro: "Erro interno ao buscar participante"});
+    } catch (error) {
+        res.status(500).send("Erro interno ao buscar participante");
         console.error("Erro ao buscar participante:", error);
     }
 };
 
-module.exports = { buscarParticipante }
+const cadastrarParticipante = async (req, res) => {
+    try {
+        const { nome_completo, cpf, email, telefone, data_nascimneto, endereco, cidade, uf } = req.body;
+
+        if (!nome_completo || !cpf) {
+            res.status(401).json({aviso: "Nome completo e CPF são obrigatórios!"});
+            return;
+        };
+        
+        const participante = await Participante.create({
+            nome_completo,
+            cpf,
+            email,
+            telefone,
+            data_nascimneto,
+            endereco,
+            cidade,
+            uf,
+        });
+
+        res.status(201).json({
+            aviso: "Participante cadastrado com sucesso!",
+            participante: participante
+        });
+
+    } catch (error) {
+        res.status(500).send("Erro interno ao cadastrar participante");
+        console.error("Erro ao cadastrar participante:", error);
+    }
+}
+
+module.exports = { buscarParticipante, cadastrarParticipante }
