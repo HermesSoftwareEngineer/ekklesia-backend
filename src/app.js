@@ -17,3 +17,5 @@ app.use("/v1/", routes)
 app.listen(port, () => {
     console.log(`Servidor rodando em: http://localhost:${port}/`)
 })
+
+module.exports = app;
