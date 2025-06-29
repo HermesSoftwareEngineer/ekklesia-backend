@@ -8,30 +8,34 @@ const User = sequelize.define(
             type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
+            autoIncrement: true,
         },
-        nome_completo: {
+        nome: {
             type: DataTypes.STRING(100),
             allowNull: false,
-        },
-        cpf: {
-            type: DataTypes.STRING(11),
-            allowNull: false,
-            unique: true,
         },
         email: {
             type: DataTypes.STRING(100),
             allowNull: false,
+            unique: true,
+        },
+        senhaHash: {
+            type: DataTypes.STRING(255),
+            allowNull: false
         },
         telefone: {
             type: DataTypes.STRING(20),
-            allowNull: false
         },
-        data_nascimento: {
+        dataNascimento: {
             type: DataTypes.DATEONLY,
-            allowNull: false
         },
-        endereco: {
-            type: DataTypes.STRING,
+        tipoUsuario: {
+            type: DataTypes.ENUM("admin", "user"),
+            defaultValue: "user",
+        },
+        ativo: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
         },
         cidade: {
             type: DataTypes.STRING,
@@ -41,7 +45,7 @@ const User = sequelize.define(
         },
     },
     {
-        //Other options for model here
+        //Other options for model here1
     },
 );
 

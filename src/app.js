@@ -2,22 +2,20 @@ const express = require('express');
 const port = 3000
 const sequelize = require('./config/db.config')
 const app = express()
-const userModel = require('./models/users.models')
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.get("/helloworld", (req, res) => {
     res.send("Olá, mundo!")
 })
 
-// Rotas para autenticação
-const authRoutes = require('./routes/auth.routes')
-app.use("/auth/", authRoutes)
-
-// Rotas de usuários
-const usersRoutes = require('./routes/users.routes')
-app.use("/users/", usersRoutes)
-
-// Rota
+// Rota da versão 1
+const routes = require('./routes/routes')
+app.use("/v1/", routes)
 
 app.listen(port, () => {
     console.log(`Servidor rodando em: http://localhost:${port}/`)
 })
+
+module.exports = app;
