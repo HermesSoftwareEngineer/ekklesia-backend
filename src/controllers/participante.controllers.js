@@ -1,4 +1,5 @@
 const Participante = require("../models/participante.models");
+const { isNumericString }= require("../utils/strings.utils");
 
 const buscarParticipante = async (req, res) => {
     try {
@@ -24,19 +25,35 @@ const buscarParticipante = async (req, res) => {
 
 const cadastrarParticipante = async (req, res) => {
     try {
-        const { nome_completo, cpf, email, telefone, data_nascimneto, endereco, cidade, uf } = req.body;
+        const { nome_completo, cpf, email, telefone, data_nascimento, endereco, cidade, uf } = req.body;
+
+        const user_id = req.user["id"];
+
+        const [dia, mes, ano] = data_nascimento.split("/");
+        const data_formatada = `${ano}-${mes}-${dia}`;
 
         if (!nome_completo || !cpf) {
             res.status(401).json({aviso: "Nome completo e CPF são obrigatórios!"});
             return;
         };
+
+        if ((cpf.length != 11) || !isNumericString(cpf)) {
+            res.status(401).json({aviso: "O CPF precisa ter 11 dígitos e conter apenas números"});
+            return;
+        };
+
+        if (uf.length != 2) {
+            res.status(401).json({aviso: "O UF precisa ter apenas 2 dígitos!"});
+            return;
+        }
         
         const participante = await Participante.create({
+            user_id,
             nome_completo,
             cpf,
             email,
             telefone,
-            data_nascimneto,
+            data_nascimento: data_formatada,
             endereco,
             cidade,
             uf,
