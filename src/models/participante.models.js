@@ -1,5 +1,6 @@
 const sequelize = require("../config/db.config");
 const { DataTypes } = require("sequelize");
+const User = require("./users.models");
 
 const Participante = sequelize.define(
     "Participante",
@@ -10,6 +11,10 @@ const Participante = sequelize.define(
             allowNull: false,
             autoIncrement: true,
         },
+        user_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         nome_completo: {
             type: DataTypes.STRING(100),
             allowNull: false,
@@ -17,7 +22,6 @@ const Participante = sequelize.define(
         cpf: {
             type: DataTypes.STRING(11),
             allowNull: false,
-            unique: true,
         },
         email: {
             type: DataTypes.STRING(100),
@@ -43,6 +47,14 @@ const Participante = sequelize.define(
         tableName: "Participantes",
     }
 );
+
+Participante.belongsTo(User, {
+    foreignKey: "user_id",
+});
+
+User.hasMany(Participante, {
+    foreignKey: "user_id",
+});
 
 (async () => {
     try {
