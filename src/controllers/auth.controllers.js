@@ -5,12 +5,18 @@ require('dotenv').config();
 
 const registerUser = async (req, res) => {
     try {
-
-        const {nome, email, senha, telefone, dataNascimento, tipoUsuario, ativo, cidade, uf } = req.body;
+        const { nome, email, senha, telefone, dataNascimento, tipoUsuario, ativo, cidade, uf, senhaSecretaAdmin } = req.body;
 
         if (!nome || !email || !senha) {
-            res.status(400).json({aviso: "Nome, e-mail e senha são obrigatórios!"});
+            res.status(400).json({ aviso: "Nome, e-mail e senha são obrigatórios!" });
             return;
+        }
+
+        // Se for admin, exige senha secreta
+        if (tipoUsuario === 'admin') {
+            if (!senhaSecretaAdmin || senhaSecretaAdmin !== process.env.SEGREDO_CADASTRO_ADMIN) {
+                return res.status(403).json({ aviso: "Senha secreta de administrador inválida ou não fornecida!" });
+            }
         }
 
         const userSearch = await User.findAll({
@@ -18,14 +24,14 @@ const registerUser = async (req, res) => {
                 email
             }
         });
-    
+
         if (userSearch.length > 0) {
             res.status(409).json({ aviso: "E-mail já cadastrado." });
             return;
         }
 
-        const saltRounds = 10
-        const senhaHash = await bcrypt.hash(senha, saltRounds)
+        const saltRounds = 10;
+        const senhaHash = await bcrypt.hash(senha, saltRounds);
 
         const user = await User.create({
             nome,
@@ -37,13 +43,13 @@ const registerUser = async (req, res) => {
             ativo,
             cidade,
             uf
-        })
+        });
 
-        res.status(201).json({ 
+        res.status(201).json({
             aviso: "Novo usuário criado!",
             user: user
         });
-    } catch (error){
+    } catch (error) {
         console.error("Erro ao registrar usuário:", error);
         res.status(500).send("Erro ao registrar usuário!");
     }
