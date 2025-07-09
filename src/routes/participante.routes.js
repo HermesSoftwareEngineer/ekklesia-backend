@@ -4,7 +4,7 @@ const { buscarParticipante, cadastrarParticipante, atualizarDadosParticipante, d
 const { authenticateToken } = require("../middlewares/authMiddleware");  
 
 
-router.get(":id", authenticateToken, buscarParticipante);
+router.get("/:id", authenticateToken, buscarParticipante);
 router.post("/cadastrar", authenticateToken, cadastrarParticipante);
 router.put("/atualizar/:id", authenticateToken, atualizarDadosParticipante);
 router.delete("/deletar/:id", authenticateToken, deletarParticipante);

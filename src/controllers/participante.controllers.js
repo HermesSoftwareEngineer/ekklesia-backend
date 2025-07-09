@@ -102,7 +102,7 @@ const atualizarDadosParticipante = async (req, res) => {
     try {
         // Pega dados da requisição
         const { nome_completo, cpf, email, telefone, data_nascimento, endereco, cidade, uf } = req.body;
-        const id = req.query.id;
+        const id = req.params.id;
         const user_id = req.user["id"];
 
         // Valida envio do corpo da requisição
