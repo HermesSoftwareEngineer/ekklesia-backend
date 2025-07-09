@@ -20,9 +20,9 @@ const registerUser = async (req, res) => {
         });
     
         if (userSearch.length > 0) {
-            res.status(409).json({aviso: "E-mail já cadastrado no sistema!", user: userSearch});
+            res.status(409).json({ aviso: "E-mail já cadastrado." });
             return;
-        };
+        }
 
         const saltRounds = 10
         const senhaHash = await bcrypt.hash(senha, saltRounds)
