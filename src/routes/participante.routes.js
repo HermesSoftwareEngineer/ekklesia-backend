@@ -5,6 +5,6 @@ const { authenticateToken } = require("../middlewares/authMiddleware");
 
 router.get("/:id", authenticateToken, buscarParticipante);
 router.post("/cadastrar", authenticateToken, cadastrarParticipante);
-router.put("/atualizar", authenticateToken, atualizarDadosParticipante);
+router.put("/atualizar/:id", authenticateToken, atualizarDadosParticipante);
 
 module.exports = router;

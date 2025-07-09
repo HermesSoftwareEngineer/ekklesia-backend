@@ -1,4 +1,5 @@
 const { isNumericString }= require("../utils/strings.utils");
+const Participante = require("../models/participante.models");
 
 function validarCPF (cpf) {
     if ((cpf.length != 11) || !isNumericString(cpf)) {
@@ -47,7 +48,17 @@ function validarEmail(email) {
     };
 
     return {valido: true};
-}
+};
+
+async function validarIdParticipante (id) {
+    const participante = await Participante.findByPk(id);
+
+    if (!participante) {
+        return {valido: false, msg: "Participante não encontrado!"};
+    };
+
+    return {valido: true}
+};
 
 function verificarCamposObrigatorios (obj, campos = []) {
     const erros = [];
@@ -61,4 +72,4 @@ function verificarCamposObrigatorios (obj, campos = []) {
     return erros;
 };
 
-module.exports = { validarCPF, verificarCamposObrigatorios, validarUF, validarData, validarEmail }
+module.exports = { validarCPF, verificarCamposObrigatorios, validarUF, validarData, validarEmail, validarIdParticipante }
