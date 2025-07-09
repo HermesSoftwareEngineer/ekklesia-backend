@@ -183,6 +183,33 @@ const atualizarDadosParticipante = async (req, res) => {
         res.status(500).send("Erro interno ao atualizar participante.");
         console.error("Erro ao atualizar participante:", error);
     }
-}
+};
 
-module.exports = { buscarParticipante, cadastrarParticipante, atualizarDadosParticipante }
+const deletarParticipante = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        // Validação do id do participante
+        const validacaoParticipante = await validarIdParticipante(id);
+        if (!validacaoParticipante.valido) {
+            res.status(400).json({ aviso: validacaoParticipante.msg });
+            return;
+        }
+
+        // Busca o participante para deletar
+        const participante = await Participante.findByPk(id);
+        if (!participante) {
+            res.status(404).json({ aviso: "Participante não encontrado!" });
+            return;
+        }
+
+        await participante.destroy();
+
+        res.status(200).json({ aviso: "Participante deletado com sucesso!" });
+    } catch (error) {
+        res.status(500).send("Erro interno ao deletar participante.");
+        console.error("Erro ao deletar participante:", error);
+    }
+};
+
+module.exports = { buscarParticipante, cadastrarParticipante, atualizarDadosParticipante, deletarParticipante }
