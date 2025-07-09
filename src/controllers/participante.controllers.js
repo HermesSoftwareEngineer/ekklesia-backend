@@ -1,4 +1,6 @@
 const Participante = require("../models/participante.models");
+const { Op } = require('sequelize');
+
 const { validarCPF, verificarCamposObrigatorios, validarUF, validarData, validarEmail, validarIdParticipante } = require("../validators/participante.validators");
 
 const buscarParticipante = async (req, res) => {
@@ -212,4 +214,49 @@ const deletarParticipante = async (req, res) => {
     }
 };
 
-module.exports = { buscarParticipante, cadastrarParticipante, atualizarDadosParticipante, deletarParticipante }
+
+// Nova função para listar todos os participantes com filtros
+const listarParticipantes = async (req, res) => {
+    try {
+        // Filtros possíveis: nome_completo, cpf, email, cidade, uf
+        const { nome_completo, cpf, email, cidade, uf } = req.query;
+
+        // Monta objeto de filtros dinamicamente
+        const filtros = {};
+        if (nome_completo) filtros.nome_completo = { $iLike: `%${nome_completo}%` };
+        if (cpf) filtros.cpf = cpf;
+        if (email) filtros.email = { $like: `%${email}%` };
+        if (cidade) filtros.cidade = { $iLike: `%${cidade}%` };
+        if (uf) filtros.uf = uf;
+
+        const where = {};
+        if (filtros.nome_completo) {
+            if (filtros.nome_completo.$iLike) {
+                where.nome_completo = { [Op.iLike]: filtros.nome_completo.$iLike };
+            } else {
+                where.nome_completo = { [Op.like]: filtros.nome_completo.$like };
+            }
+        }
+        if (filtros.cpf) where.cpf = filtros.cpf;
+        if (filtros.email) where.email = { [Op.like]: filtros.email.$like };
+        if (filtros.cidade) {
+            if (filtros.cidade.$iLike) {
+                where.cidade = { [Op.iLike]: filtros.cidade.$iLike };
+            } else {
+                where.cidade = { [Op.like]: filtros.cidade.$like };
+            }
+        }
+        if (filtros.uf) where.uf = filtros.uf;
+
+        const participantes = await Participante.findAll({ where });
+        res.status(200).json({
+            aviso: "Participantes encontrados!",
+            participantes: participantes
+        });
+    } catch (error) {
+        res.status(500).send("Erro interno ao listar participantes.");
+        console.error("Erro ao listar participantes:", error);
+    }
+};
+
+module.exports = { listarParticipantes, buscarParticipante, cadastrarParticipante, atualizarDadosParticipante, deletarParticipante }
