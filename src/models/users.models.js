@@ -49,13 +49,4 @@ const User = sequelize.define(
     },
 );
 
-(async () => {
-    try {
-        await User.sync({ alter: true })
-        console.log("Modelo User sincronizado! Tipo de sincronização: alter.")
-    } catch (error) {
-        console.error("Erro ao sincronizar modelo USER:", error)
-    }
-})();
-
 module.exports = User;

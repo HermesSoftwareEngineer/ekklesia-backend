@@ -48,21 +48,4 @@ const Participante = sequelize.define(
     }
 );
 
-Participante.belongsTo(User, {
-    foreignKey: "user_id",
-});
-
-User.hasMany(Participante, {
-    foreignKey: "user_id",
-});
-
-(async () => {
-    try {
-        await Participante.sync({ alter: true });
-        console.log("Modelo Participante sincronizado! Tipo de sincronização: alter.");
-    }catch (error) {
-        console.error("Erro ao sincronizar modelo PARTICIPANTE:", error);
-    }
-})();
-
 module.exports = Participante;
