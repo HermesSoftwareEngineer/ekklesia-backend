@@ -105,4 +105,18 @@ const criarEvento = async (req, res) => {
     }
 };
 
-module.exports = { criarEvento }
+// Controller para buscar evento por ID
+const buscarEvento = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const evento = await Evento.findByPk(id);
+        if (!evento) {
+            return res.status(404).json({ erro: 'Evento não encontrado' });
+        }
+        return res.status(200).json(evento);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+};
+
+module.exports = { criarEvento, buscarEvento }

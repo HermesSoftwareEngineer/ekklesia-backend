@@ -6,4 +6,7 @@ const { authorizeUserType, authenticateToken } = require('../middlewares/authMid
 // Rota para cadastrar um novo evento (apenas admin)
 router.post('/', authorizeUserType('admin'), authenticateToken, eventoController.criarEvento);
 
+// Rota para buscar evento por ID
+router.get('/:id', eventoController.buscarEvento);
+
 module.exports = router;
