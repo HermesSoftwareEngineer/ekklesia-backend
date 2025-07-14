@@ -12,4 +12,7 @@ router.get('/:id', eventoController.buscarEvento);
 // Rota para listar todos os eventos
 router.get('/', eventoController.listarEventos);
 
+// Rota para atualizar evento por ID (apenas admin)
+router.put('/:id', authorizeUserType('admin'), authenticateToken, eventoController.atualizarEvento);
+
 module.exports = router;
