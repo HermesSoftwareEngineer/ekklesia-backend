@@ -15,4 +15,7 @@ router.get('/', eventoController.listarEventos);
 // Rota para atualizar evento por ID (apenas admin)
 router.put('/:id', authorizeUserType('admin'), authenticateToken, eventoController.atualizarEvento);
 
+// Rota para deletar evento por ID (apenas admin)
+router.delete('/:id', authorizeUserType('admin'), authenticateToken, eventoController.deletarEvento);
+
 module.exports = router;

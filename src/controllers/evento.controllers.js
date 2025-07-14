@@ -283,4 +283,19 @@ const atualizarEvento = async (req, res) => {
     }
 };
 
-module.exports = { criarEvento, buscarEvento, listarEventos, atualizarEvento }
+// Controller para deletar um evento por ID
+const deletarEvento = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const evento = await Evento.findByPk(id);
+        if (!evento) {
+            return res.status(404).json({ erro: 'Evento não encontrado' });
+        }
+        await evento.destroy();
+        return res.status(204).send();
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { criarEvento, buscarEvento, listarEventos, atualizarEvento, deletarEvento }
