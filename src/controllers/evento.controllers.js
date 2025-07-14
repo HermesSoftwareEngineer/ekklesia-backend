@@ -1,4 +1,5 @@
 const Evento = require('../models/evento.models');
+const { Op } = require('sequelize');
 const {
     validarDatasEvento,
     validarCamposObrigatoriosEvento,
@@ -119,4 +120,65 @@ const buscarEvento = async (req, res) => {
     }
 };
 
-module.exports = { criarEvento, buscarEvento }
+// Controller para listar todos os eventos com filtros
+const listarEventos = async (req, res) => {
+    try {
+        const filtros = {};
+
+        // Filtro case-insensitive para título
+        if (req.query.titulo) {
+            filtros.titulo = { [Op.iLike]: `%${req.query.titulo}%` };
+        }
+        if (req.query.status) {
+            filtros.status = { [Op.iLike]: req.query.status };
+        }
+        if (req.query.categoria_evento) {
+            filtros.categoria_evento = { [Op.iLike]: req.query.categoria_evento };
+        }
+        if (req.query.cidade_uf_id) {
+            filtros.cidade_uf_id = req.query.cidade_uf_id;
+        }
+
+        // Validação e conversão de datas dd/mm/aaaa para yyyy-mm-dd
+        function parseDataBRtoISO(dataStr) {
+            const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+            const match = dataStr.match(regex);
+            if (!match) return null;
+            const [ , dia, mes, ano ] = match;
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        if (req.query.data_inicio) {
+            const validacao = validarDataEvento(req.query.data_inicio);
+            if (!validacao.valido) {
+                return res.status(400).json({ erro: `data_inicio: ${validacao.msg}` });
+            }
+            const dataISO = parseDataBRtoISO(req.query.data_inicio);
+            if (!dataISO) {
+                return res.status(400).json({ erro: 'Formato de data_inicio inválido. Use dd/mm/aaaa.' });
+            }
+            filtros.data_inicio = { [Op.gte]: dataISO };
+        }
+        if (req.query.data_fim) {
+            const validacao = validarDataEvento(req.query.data_fim);
+            if (!validacao.valido) {
+                return res.status(400).json({ erro: `data_fim: ${validacao.msg}` });
+            }
+            const dataISO = parseDataBRtoISO(req.query.data_fim);
+            if (!dataISO) {
+                return res.status(400).json({ erro: 'Formato de data_fim inválido. Use dd/mm/aaaa.' });
+            }
+            filtros.data_fim = { [Op.lte]: dataISO };
+        }
+
+        const eventos = await Evento.findAll({
+            where: filtros
+        });
+
+        res.status(200).json(eventos);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao listar eventos', error });
+    }
+};
+
+module.exports = { criarEvento, buscarEvento, listarEventos }

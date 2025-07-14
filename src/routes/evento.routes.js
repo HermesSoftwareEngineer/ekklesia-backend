@@ -9,4 +9,7 @@ router.post('/', authorizeUserType('admin'), authenticateToken, eventoController
 // Rota para buscar evento por ID
 router.get('/:id', eventoController.buscarEvento);
 
+// Rota para listar todos os eventos
+router.get('/', eventoController.listarEventos);
+
 module.exports = router;
