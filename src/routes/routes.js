@@ -9,4 +9,8 @@ router.use("/auth/", authRoutes)
 const participanteRoutes = require('./participante.routes');
 router.use("/participante/", participanteRoutes);
 
+// Rotas para evento
+const eventoRoutes = require('./evento.routes');
+router.use("/evento/", eventoRoutes);
+
 module.exports = router;
