@@ -6,7 +6,7 @@ const app = express();
 
 const cors = require('cors');
 app.use(cors({
-    origin: 'http://localhost:8080'
+    origin: `${process.env.FROTEND_ORIGIN}`
 }));
 
 app.use(express.json())
