@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize')
-const sequelize = require('../config/db.config')
+const sequelize = require('../config/db.config');
 
 const User = sequelize.define(
     'User', 
@@ -48,14 +48,5 @@ const User = sequelize.define(
         //Other options for model here1
     },
 );
-
-(async () => {
-    try {
-        await User.sync({ alter: true })
-        console.log("Modelo User sincronizado! Tipo de sincronização: alter.")
-    } catch (error) {
-        console.error("Erro ao sincronizar modelo USER:", error)
-    }
-})();
 
 module.exports = User;

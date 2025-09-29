@@ -1,7 +1,13 @@
 const express = require('express');
-const port = 3000
-const sequelize = require('./config/db.config')
-const app = express()
+const port = 3000;
+const sequelize = require('./config/db.config');
+const models = require("./models/index");
+const app = express();
+
+const cors = require('cors');
+app.use(cors({
+    origin: `${process.env.FRONTEND_ORIGIN}`
+}));
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
