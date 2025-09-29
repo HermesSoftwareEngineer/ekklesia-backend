@@ -6,7 +6,7 @@ const app = express();
 
 const cors = require('cors');
 app.use(cors({
-    origin: `${process.env.FROTEND_ORIGIN}`
+    origin: `${process.env.FRONTEND_ORIGIN}`
 }));
 
 app.use(express.json())
