@@ -33,4 +33,8 @@ router.use("/inscricao/", inscricaoRoutes);
 const cidadeUFRoutes = require('./cidadeUF.routes');
 router.use("/cidade-uf/", cidadeUFRoutes);
 
+// Rotas para categorias de evento
+const categoriaEventoRoutes = require('./categoriaEvento.routes');
+router.use("/categoria-evento/", categoriaEventoRoutes);
+
 module.exports = router;
