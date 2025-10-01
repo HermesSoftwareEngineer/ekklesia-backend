@@ -2,10 +2,14 @@ const sequelize = require('../config/db.config');
 const User = require('./users.models');
 const Participante = require('./participante.models');
 const Evento = require('./evento.models');
+const TipoVaga = require('./tipoVaga.models');
+const EventoAdministrador = require('./eventoAdministrador.models');
 
 // Relacionamentos
 Participante.belongsTo(User, { foreignKey: 'user_id' });
 User.hasMany(Participante, { foreignKey: 'user_id' });
+
+// Relacionamento TipoVaga com Evento já está definido no modelo tipoVaga.models.js
 
 // Adicione outros relacionamentos aqui, se necessário
 
@@ -15,6 +19,8 @@ async function syncModels() {
     await User.sync({ alter: true });
     await Participante.sync({ alter: true });
     await Evento.sync({ alter: true });
+    await TipoVaga.sync({ alter: true });
+    await EventoAdministrador.sync({ alter: true });
     console.log('Todos os modelos foram sincronizados com sucesso!');
   } catch (error) {
     console.error('Erro ao sincronizar modelos:', error);
@@ -29,4 +35,6 @@ module.exports = {
   User,
   Participante,
   Evento,
+  TipoVaga,
+  EventoAdministrador,
 };
