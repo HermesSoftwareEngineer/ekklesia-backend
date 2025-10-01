@@ -29,4 +29,8 @@ router.use("/evento-admin/", eventoAdministradorRoutes);
 const inscricaoRoutes = require('./inscricao.routes');
 router.use("/inscricao/", inscricaoRoutes);
 
+// Rotas para cidades e UFs
+const cidadeUFRoutes = require('./cidadeUF.routes');
+router.use("/cidade-uf/", cidadeUFRoutes);
+
 module.exports = router;

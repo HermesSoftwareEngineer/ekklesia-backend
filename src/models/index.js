@@ -5,6 +5,7 @@ const Evento = require('./evento.models');
 const TipoVaga = require('./tipoVaga.models');
 const EventoAdministrador = require('./eventoAdministrador.models');
 const Inscricao = require('./inscricao.models');
+const CidadeUF = require('./cidadeUF.models');
 
 // Relacionamentos
 Participante.belongsTo(User, { foreignKey: 'user_id' });
@@ -31,6 +32,7 @@ async function syncModels() {
     // Primeiro sincronizamos os modelos independentes
     await User.sync({ alter: true });
     await Evento.sync({ alter: true });
+    await CidadeUF.sync({ alter: true });
     
     // Depois os modelos que dependem dos primeiros
     await Participante.sync({ alter: true });
