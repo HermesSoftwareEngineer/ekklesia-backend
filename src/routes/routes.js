@@ -25,4 +25,8 @@ router.use("/tipo-vaga/", tipoVagaRoutes);
 const eventoAdministradorRoutes = require('./eventoAdministrador.routes');
 router.use("/evento-admin/", eventoAdministradorRoutes);
 
+// Rotas para inscrições
+const inscricaoRoutes = require('./inscricao.routes');
+router.use("/inscricao/", inscricaoRoutes);
+
 module.exports = router;
