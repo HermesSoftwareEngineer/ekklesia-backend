@@ -1,6 +1,7 @@
 const User = require("../models/users.models");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { validarEConverterData } = require('../validators/users.validators');
 require('dotenv').config();
 
 const registerUser = async (req, res) => {
@@ -33,12 +34,22 @@ const registerUser = async (req, res) => {
         const saltRounds = 10;
         const senhaHash = await bcrypt.hash(senha, saltRounds);
 
+        // Validar e formatar data de nascimento se fornecida
+        let dataFormatada = null;
+        if (dataNascimento) {
+            const validacao = validarEConverterData(dataNascimento);
+            if (!validacao.valido) {
+                return res.status(400).json({ aviso: validacao.msg });
+            }
+            dataFormatada = validacao.dataConvertida;
+        }
+
         const user = await User.create({
             nome,
             email,
             senhaHash,
             telefone,
-            dataNascimento,
+            dataNascimento: dataFormatada,
             tipoUsuario,
             ativo,
             cidade,
@@ -82,7 +93,13 @@ const login = async (req, res) => {
             expiresIn: '1h'
         });
 
-        res.status(200).json({aviso: "Login bem sucedido!", token: token})
+        res.status(200).json({
+            aviso: "Login bem sucedido!",
+            token: token,
+            nome: user[0].dataValues.nome,
+            email: user[0].dataValues.email,
+            id: user[0].dataValues.id
+        })
 
     } catch (error) {
         console.error("Erro ao logar usuário:", error);

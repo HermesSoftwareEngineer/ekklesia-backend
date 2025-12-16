@@ -52,30 +52,36 @@ const cadastrarParticipante = async (req, res) => {
             return;
         };
 
-        // Validar UF
-        const validacaoUF = validarUF(uf);
-        if (!validacaoUF.valido) {
-            res.status(400).json({aviso: validacaoUF.msg});
-            return;
-        };
+        // Validar UF (apenas se fornecido)
+        if (uf !== undefined && uf !== null && uf !== '') {
+            const validacaoUF = validarUF(uf);
+            if (!validacaoUF.valido) {
+                res.status(400).json({aviso: validacaoUF.msg});
+                return;
+            }
+        }
 
-        // Validar e-mail
-        const validacaoEmail = validarEmail(email);
-        if (!validacaoEmail.valido) {
-            res.status(400).json({aviso: validacaoEmail.msg});
-            return;
-        };
+        // Validar e-mail (apenas se fornecido)
+        if (email !== undefined && email !== null && email !== '') {
+            const validacaoEmail = validarEmail(email);
+            if (!validacaoEmail.valido) {
+                res.status(400).json({aviso: validacaoEmail.msg});
+                return;
+            }
+        }
 
-        // Validar Data
-        const validacaoData = validarData(data_nascimento);
-        if (!validacaoData.valido) {
-            res.status(400).json({aviso: validacaoData.msg});
-            return;
-        };
-        
-        // Formata a data no formato correto
-        const [dia, mes, ano] = data_nascimento.split("/");
-        const dataFormatada = `${ano}-${mes}-${dia}`;
+        // Validar Data (apenas se fornecida)
+        let dataFormatada = null;
+        if (data_nascimento !== undefined && data_nascimento !== null && data_nascimento !== '') {
+            const validacaoData = validarData(data_nascimento);
+            if (!validacaoData.valido) {
+                res.status(400).json({aviso: validacaoData.msg});
+                return;
+            }
+            // Formata a data no formato correto
+            const [dia, mes, ano] = data_nascimento.split("/");
+            dataFormatada = `${ano}-${mes}-${dia}`;
+        }
         
         const participante = await Participante.create({
             user_id,
@@ -128,7 +134,7 @@ const atualizarDadosParticipante = async (req, res) => {
         }
 
         // Validação dos campos (se enviados)
-        if (cpf !== undefined) {
+        if (cpf !== undefined && cpf !== null && cpf !== '') {
             const validacaoCPF = validarCPF(cpf);
             if (!validacaoCPF.valido) {
                 res.status(400).json({ aviso: validacaoCPF.msg });
@@ -136,7 +142,7 @@ const atualizarDadosParticipante = async (req, res) => {
             }
         }
 
-        if (uf !== undefined) {
+        if (uf !== undefined && uf !== null && uf !== '') {
             const validacaoUF = validarUF(uf);
             if (!validacaoUF.valido) {
                 res.status(400).json({ aviso: validacaoUF.msg });
@@ -144,7 +150,7 @@ const atualizarDadosParticipante = async (req, res) => {
             }
         }
 
-        if (email !== undefined) {
+        if (email !== undefined && email !== null && email !== '') {
             const validacaoEmail = validarEmail(email);
             if (!validacaoEmail.valido) {
                 res.status(400).json({ aviso: validacaoEmail.msg });
@@ -153,7 +159,7 @@ const atualizarDadosParticipante = async (req, res) => {
         }
 
         let dataFormatada = data_nascimento;
-        if (data_nascimento !== undefined) {
+        if (data_nascimento !== undefined && data_nascimento !== null && data_nascimento !== '') {
             const validacaoData = validarData(data_nascimento);
             if (!validacaoData.valido) {
                 res.status(400).json({ aviso: validacaoData.msg });

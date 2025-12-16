@@ -181,10 +181,18 @@ const cadastrarInscricao = async (req, res) => {
             }
         });
 
-        if (inscricoesExistentes >= tipoVaga.total_vagas) {
+        if (inscricoesExistentes >= tipoVaga.dataValues.qunatidade_total) {
             res.status(409).json({aviso: "Não há vagas disponíveis para este tipo!"});
             return;
         }
+
+        // Atualizar a quantidade disponível de vagas (decrementar em 1)
+        const novaQuantidadeDisponivel = tipoVaga.dataValues.quantidade_disponivel - 1;
+        if (novaQuantidadeDisponivel < 0) {
+            res.status(409).json({aviso: "Não é possível processar a inscrição. Quantidade de vagas insuficiente!"});
+            return;
+        }
+        await tipoVaga.update({ quantidade_disponivel: novaQuantidadeDisponivel });
 
         // Criar a inscrição
         // Se for admin cadastrando para outro usuário, use o user_id do participante
@@ -435,6 +443,17 @@ const deletarInscricao = async (req, res) => {
         if (!isAdmin) {
             res.status(403).json({aviso: "Apenas administradores do sistema podem deletar inscrições!"});
             return;
+        }
+
+        // Buscar o tipo de vaga para incrementar a quantidade disponível
+        const tipoVaga = await TipoVaga.findByPk(inscricao.tipo_vaga_id);
+        if (tipoVaga) {
+            // Incrementar a quantidade disponível (+1) apenas se a inscrição estava ativa
+            if (inscricao.status_inscricao === 'Pendente' || inscricao.status_inscricao === 'Pago') {
+                await tipoVaga.update({ 
+                    quantidade_disponivel: tipoVaga.quantidade_disponivel + 1 
+                });
+            }
         }
 
         // Deletar a inscrição

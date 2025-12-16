@@ -1,6 +1,7 @@
 const User = require("../models/users.models");
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
+const { validarEConverterData } = require('../validators/users.validators');
 
 // Função para listar todos os usuários com filtros opcionais
 const listarUsuarios = async (req, res) => {
@@ -91,11 +92,14 @@ const cadastrarUsuario = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const senhaHash = await bcrypt.hash(senha, salt);
 
-        // Formatar data se fornecida no formato DD/MM/YYYY
-        let dataFormatada = dataNascimento;
-        if (dataNascimento && dataNascimento.includes('/')) {
-            const [dia, mes, ano] = dataNascimento.split("/");
-            dataFormatada = `${ano}-${mes}-${dia}`;
+        // Validar e formatar data de nascimento se fornecida
+        let dataFormatada = null;
+        if (dataNascimento) {
+            const validacao = validarEConverterData(dataNascimento);
+            if (!validacao.valido) {
+                return res.status(400).json({ aviso: validacao.msg });
+            }
+            dataFormatada = validacao.dataConvertida;
         }
 
         // Criar o usuário
@@ -167,11 +171,14 @@ const atualizarUsuario = async (req, res) => {
             senhaAtualizada = await bcrypt.hash(senha, salt);
         }
 
-        // Formatar data se fornecida no formato DD/MM/YYYY
-        let dataFormatada = dataNascimento;
-        if (dataNascimento && dataNascimento.includes('/')) {
-            const [dia, mes, ano] = dataNascimento.split("/");
-            dataFormatada = `${ano}-${mes}-${dia}`;
+        // Validar e formatar data de nascimento se fornecida
+        let dataFormatada = undefined;
+        if (dataNascimento) {
+            const validacao = validarEConverterData(dataNascimento);
+            if (!validacao.valido) {
+                return res.status(400).json({ aviso: validacao.msg });
+            }
+            dataFormatada = validacao.dataConvertida;
         }
         
         // Apenas admin pode alterar o tipo de usuário

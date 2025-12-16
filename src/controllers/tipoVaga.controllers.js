@@ -103,7 +103,6 @@ const criarTipoVaga = async (req, res) => {
             descricao,
             preco,
             quantidade_total,
-            quantidade_disponivel,
             data_inicio,
             data_fim
         } = req.body;
@@ -111,7 +110,7 @@ const criarTipoVaga = async (req, res) => {
         // Validação de campos obrigatórios
         const camposObrigatorios = [
             'evento_id', 'nome_vaga', 'descricao', 'preco', 
-            'quantidade_total', 'quantidade_disponivel'
+            'quantidade_total'
         ];
         
         const errosCampos = validarCamposObrigatoriosTipoVaga(req.body, camposObrigatorios);
@@ -167,6 +166,9 @@ const criarTipoVaga = async (req, res) => {
         // Converter datas do formato dd/mm/aaaa para yyyy-mm-dd
         const dataInicioFormatada = data_inicio ? converterFormatoData(data_inicio) : null;
         const dataFimFormatada = data_fim ? converterFormatoData(data_fim) : null;
+
+        // Define quantidade_disponivel igual a quantidade_total no cadastro
+        const quantidade_disponivel = quantidade_total;
 
         // Cria o tipo de vaga
         const tipoVaga = await TipoVaga.create({
